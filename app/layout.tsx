@@ -1,43 +1,72 @@
-import { Toaster } from "sonner";
 import type { Metadata } from "next";
-import Providers from "./providers";
-import { Geist, Geist_Mono } from "next/font/google";
-import "@/app/globals.css";
+import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+export const metadata: Metadata = {
+  title: {
+    default: "CareerPilot AI",
+    template: "%s | CareerPilot AI",
+  },
+  description:
+    "AI-powered Resume Analyzer that helps users improve ATS scores, identify missing skills, and build job-winning resumes.",
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  keywords: [
+    "CareerPilot AI",
+    "Resume Analyzer",
+    "ATS Resume Checker",
+    "AI Resume Review",
+    "Resume Builder",
+    "Job Search",
+    "Next.js",
+  ],
 
-export const metadata = {
-  title: "CareerPilot AI",
-  description: "AI Powered Resume Analyzer",
+  authors: [
+    {
+      name: "CareerPilot AI Team",
+    },
+  ],
+
+  creator: "CareerPilot AI",
+  applicationName: "CareerPilot AI",
+
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/logo.png",
+  },
+
+  openGraph: {
+    title: "CareerPilot AI",
+    description:
+      "AI-powered Resume Analyzer for ATS optimization and career growth.",
+    siteName: "CareerPilot AI",
+    type: "website",
+    images: [
+      {
+        url: "/logo.png",
+        width: 512,
+        height: 512,
+        alt: "CareerPilot AI Logo",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "CareerPilot AI",
+    description:
+      "AI-powered Resume Analyzer for ATS optimization and career growth.",
+    images: ["/logo.png"],
+  },
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-  <html
-  lang="en"
-  className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
->
-  <body className="min-h-full flex flex-col">
-  <Providers>
-    {children}
-  </Providers>
-  <Toaster
-    position="top-right"
-    richColors
-  />
-</body>
-</html>
-);
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
 }
-
