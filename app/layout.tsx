@@ -14,13 +14,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "CareerPilot AI",
-    template: "%s | CareerPilot AI",
-  },
-  description:
-    "AI-powered ATS Resume Analyzer that helps job seekers improve resumes and land interviews.",
+export const metadata = {
+  title: "CareerPilot AI",
+  description: "AI Powered Resume Analyzer",
 };
 export default function RootLayout({
   children,

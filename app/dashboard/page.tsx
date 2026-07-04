@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
+import LogoutButton from "@/components/LogoutButton";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import ResumeUploader from "@/components/resume/ResumeUploader";
 import ResumeList from "@/components/resume/ResumeList";
@@ -35,13 +36,21 @@ export default async function DashboardPage() {
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
 
-          <h1 className="text-4xl font-bold text-slate-800">
-            Welcome back, {session.user?.name} 👋
-          </h1>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
 
-          <p className="text-gray-500 mt-3 text-lg">
-            Upload your resume, analyze it using AI, and improve your ATS score.
-          </p>
+            <div>
+              <h1 className="text-4xl font-bold text-slate-800">
+                Welcome back, {session.user?.name} 👋
+              </h1>
+
+              <p className="text-gray-500 mt-3 text-lg">
+                Upload your resume, analyze it using AI, and improve your ATS score.
+              </p>
+            </div>
+
+            <LogoutButton />
+
+          </div>
 
         </div>
 
@@ -89,7 +98,6 @@ export default async function DashboardPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
 
             <div>
-
               <h2 className="text-3xl font-bold text-slate-800">
                 My Resume Library
               </h2>
@@ -97,14 +105,10 @@ export default async function DashboardPage() {
               <p className="text-gray-500 mt-2">
                 Search, view, download, and manage your uploaded resumes.
               </p>
-
             </div>
 
             <div className="mt-4 md:mt-0 bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-medium">
-
-              {resumes.length} Resume
-              {resumes.length !== 1 ? "s" : ""}
-
+              {resumes.length} Resume{resumes.length !== 1 ? "s" : ""}
             </div>
 
           </div>
