@@ -2,10 +2,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import ResumeUploader from "@/components/resume/ResumeUploader";
+import ResumeList from "@/components/resume/ResumeList";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -23,90 +23,97 @@ export default async function DashboardPage() {
     },
   });
 
-  const latestScore =
-    resumes.find((r) => r.atsScore !== null)?.atsScore ?? "--";
+  const latestResume = resumes.find(
+    (resume) => resume.atsScore !== null
+  );
 
   return (
-    <main className="min-h-screen bg-slate-100 p-8">
+    <main className="min-h-screen bg-slate-100">
+      <div className="max-w-7xl mx-auto px-6 py-10">
 
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold">
-          Welcome, {session.user?.name} 👋
-        </h1>
+        {/* Header */}
 
-        <p className="text-gray-500 mt-2">
-          AI Powered Resume Analyzer
-        </p>
-      </div>
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <h1 className="text-4xl font-bold text-slate-800">
+            Welcome back, {session.user?.name} 👋
+          </h1>
 
-        <DashboardCard
-          title="Latest ATS Score"
-          value={`${latestScore}`}
-        />
+          <p className="text-gray-500 mt-3 text-lg">
+            Upload your resume, analyze it using AI, and improve your ATS score.
+          </p>
 
-        <DashboardCard
-          title="Resumes Uploaded"
-          value={resumes.length.toString()}
-        />
+        </div>
 
-        <DashboardCard
-          title="AI Analysis"
-          value="Completed"
-        />
+        {/* Dashboard Cards */}
 
-        <DashboardCard
-          title="Status"
-          value="Active"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-      </div>
+          <DashboardCard
+            title="Latest ATS Score"
+            value={
+              latestResume?.atsScore !== null &&
+              latestResume?.atsScore !== undefined
+                ? `${latestResume.atsScore}%`
+                : "--"
+            }
+          />
 
-      <div className="mt-10">
-        <ResumeUploader />
-      </div>
+          <DashboardCard
+            title="Resumes Uploaded"
+            value={resumes.length}
+          />
 
-      <div className="mt-10 bg-white rounded-xl shadow p-6">
+          <DashboardCard
+            title="AI Analysis"
+            value={latestResume ? "Completed" : "Pending"}
+          />
 
-        <h2 className="text-2xl font-bold mb-6">
-          My Resumes
-        </h2>
+          <DashboardCard
+            title="Status"
+            value="Active"
+          />
 
-        {resumes.length === 0 ? (
-          <p>No resumes uploaded yet.</p>
-        ) : (
-          <div className="space-y-4">
+        </div>
 
-            {resumes.map((resume) => (
-              <div
-                key={resume.id}
-                className="flex items-center justify-between border rounded-lg p-4 hover:bg-slate-50"
-              >
-                <div>
-                  <h3 className="font-semibold">
-                    {resume.title}
-                  </h3>
+        {/* Upload Resume */}
 
-                  <p className="text-gray-500 text-sm">
-                    ATS Score: {resume.atsScore ?? "Pending"}
-                  </p>
-                </div>
+        <div className="mt-10">
+          <ResumeUploader />
+        </div>
 
-                <Link
-                  href={`/dashboard/resume/${resume.id}`}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-                >
-                  View Analysis
-                </Link>
-              </div>
-            ))}
+        {/* Resume Library */}
+
+        <div className="mt-10 bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+
+            <div>
+
+              <h2 className="text-3xl font-bold text-slate-800">
+                My Resume Library
+              </h2>
+
+              <p className="text-gray-500 mt-2">
+                Search, view, download, and manage your uploaded resumes.
+              </p>
+
+            </div>
+
+            <div className="mt-4 md:mt-0 bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-medium">
+
+              {resumes.length} Resume
+              {resumes.length !== 1 ? "s" : ""}
+
+            </div>
 
           </div>
-        )}
+
+          <ResumeList resumes={resumes} />
+
+        </div>
 
       </div>
-
     </main>
   );
 }
