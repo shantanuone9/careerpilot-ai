@@ -1,55 +1,63 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/hash";
-import { registerSchema } from "@/lib/validations";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const { name, email, password } = await req.json();
 
-    const parsed = registerSchema.safeParse(body);
-
-    if (!parsed.success) {
+    if (!name || !email || !password) {
       return NextResponse.json(
-        { error: parsed.error.flatten() },
+        { error: "All fields are required." },
         { status: 400 }
       );
     }
 
-    const { name, email, password, role } = parsed.data;
-
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: {
+        email,
+      },
     });
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "User already exists" },
-        { status: 400 }
+        {
+          error: "Email already registered.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
     const hashedPassword = await hashPassword(password);
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        role
-      }
+      },
     });
 
-    return NextResponse.json({
-      success: true,
-      user
-    });
+    return NextResponse.json(
+      {
+        message: "Registration successful!",
+      },
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      {
+        error: "Internal Server Error",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
